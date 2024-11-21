@@ -1,7 +1,7 @@
 /**
- * Description: File that fetches Wikimedia streaming data. 
- * Runs on a separate worker thread.
- * @author Sybille Légitime, modified Oct 28, 2024
+ * @fileoverview File that fetches Wikimedia streaming data. Runs on a separate worker thread.
+ * @author Sybille Légitime
+ * @copyright 2024 Bouncing Balls. All rights reserved
  */
 
 const url: string = 'https://stream.wikimedia.org/v2/stream/page-create';
@@ -17,7 +17,7 @@ let colorsSize: number = 0;
  * @param key 
  * @returns 
  */
-function updateCountAndGenerateColor(dict: Record<string, number>, key: string): string {
+const updateCountAndGenerateColor = (dict: Record<string, number>, key: string): string => {
     if(key in dict) {
         dict[key]++;
     }
@@ -38,7 +38,7 @@ function updateCountAndGenerateColor(dict: Record<string, number>, key: string):
  * Generate random color
  * @returns Hex code for color
  */
-function generateRandomColor(): string {
+const generateRandomColor = (): string  => {
     const chars = '0123456789ABCDEF';
     let color = '#';
     

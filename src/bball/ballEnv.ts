@@ -1,6 +1,7 @@
 /**
- * Description: Screen for bouncing balls
- * @author Sybille Légitime, modified Oct 28, 2024
+ * @fileoverview Screen for bouncing balls
+ * @author Sybille Légitime
+ * @copyright 2024 Bouncing Balls. All rights reserved
  */
 
 export class BallEnv {
@@ -18,6 +19,7 @@ export class BallEnv {
   counterBoxWidth: number;
   counterBoxHeight: number;
   counter: number;
+  wikiMediaDomainNames: any[];
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -28,7 +30,8 @@ export class BallEnv {
     counterBoxColor: string,
     counterBoxWidth: number,
     counterBoxHeight: number,
-    counter: number
+    counter: number,
+    wikiMediaDomainNames: any[],
   ) {
     this.context = context;
     this.objects = [];
@@ -40,6 +43,7 @@ export class BallEnv {
     this.counterBoxWidth = counterBoxWidth;
     this.counterBoxHeight = counterBoxHeight;
     this.counter = counter;
+    this.wikiMediaDomainNames = wikiMediaDomainNames;
   }
 
   /**
@@ -53,10 +57,45 @@ export class BallEnv {
    * Getter and setter for the wiki counter
    */
   get wikiCounter(): number {
-    return this.counter
+    return this.counter;
   }
   set wikiCounter(value: number) {
     this.counter = value;
+  }
+
+  /**
+  * Getter and setter for the wiki domain name
+  */
+  get wmDomainNames(): any[] {
+    return this.wikiMediaDomainNames;
+  }
+  set wmDomainNames(value: any) {
+    this.wikiMediaDomainNames.push(value);
+  }
+
+  /**
+   * Add object to objects array
+   * @param object
+   */
+  public addObject(object: object): void {
+    this.objects.push(object);
+  }
+
+  /**
+   * Renders the balls in the environment
+   */
+  public startRendering() {
+    setInterval(() => {
+      this.updateSize();
+      this.clear();
+      this.objects.forEach(object => {
+        object.step();
+        object.checkCollisionFromList(this.objects);
+      });
+      this.renderWikiCounter();
+      this.renderObjects();
+      this.renderWikiList();
+    }, 0);
   }
 
   /**
@@ -81,6 +120,30 @@ export class BallEnv {
     this.context.clearRect(0, 0, this.width, this.height);
   }
 
+   /**
+   * Render text on the canvas
+   * @param ctx 
+   * @param text 
+   */
+   private renderText(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    font: string,
+    color: string,
+    text: string,
+  ): void {
+      // Set font properties
+      ctx.font = font;
+      ctx.fillStyle = color;
+
+      // Draw the text
+      ctx.fillText(text, x, y); 
+  }
+
+  /**
+   * Render the number of newly created wikimedia pages names to the screen
+   */
   private renderWikiCounter(): void {
     // Draw rectangle
     this.context.beginPath();
@@ -91,39 +154,31 @@ export class BallEnv {
     this.context.fillStyle = this.counterBoxColor;
     this.context.fill();
 
-    // Set font properties
-    this.context.font = '30px Jost';
-    this.context.fillStyle = "white";
-
-    // Draw the text
-    this.context.fillText(
-      `Total # of new pages: ${this.counter}`, 
-      this.COUNTER_TEXT_X, 
-      this.COUNTER_TEXT_Y
-    ); 
+    this.renderText(
+      this.context,
+      this.COUNTER_TEXT_X,
+      this.COUNTER_TEXT_Y,
+      '30px Jost',
+      'white',
+      `Total # of new pages: ${this.counter}`
+    );
   }
 
   /**
-   * Add object to objects array
-   * @param object
+   * Render the list of wikimedia domain names with newly created pages to the screen
    */
-  public addObject(object: object): void {
-    this.objects.push(object);
-  }
-
-  /**
-   * Renders the balls in the environment
-   */
-  public startRendering() {
-    setInterval(() => {
-      this.updateSize();
-      this.clear();
-      this.objects.forEach(object => {
-        object.step();
-        object.checkCollisionFromList(this.objects);
-      });
-      this.renderWikiCounter();
-      this.renderObjects();
-    }, 0);
+  private renderWikiList(): void {
+    let wikiDomainNameY = 40;
+    this.wikiMediaDomainNames.forEach(domainNameObj => {
+      wikiDomainNameY += 40;
+      this.renderText(
+        this.context,
+        this.COUNTER_TEXT_X,
+        wikiDomainNameY,
+        '30px Jost',
+        domainNameObj['color'],
+        domainNameObj['name']
+      );
+    })
   }
 }

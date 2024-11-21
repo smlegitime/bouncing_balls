@@ -1,6 +1,7 @@
 /**
- * Description: Ball class
- * @author Sybille Légitime, modified Oct 25, 2024
+ * @fileoverview Ball class
+ * @author Sybille Légitime
+ * @copyright 2024 Bouncing Balls. All rights reserved
  */
 
 import Victor from 'victor';
@@ -61,26 +62,6 @@ export class Ball {
   }
 
   /**
-   * Render text on the canvas
-   * @param ctx 
-   * @param text 
-   */
-  private renderText(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    font: string, 
-    text: string,
-  ): void {
-      // Set font properties
-      ctx.font = font;
-      ctx.fillStyle = "white";
-
-      // Draw the text
-      ctx.fillText(text, x, y); 
-  }
-
-  /**
    * Remove parameter value from the applied forces list
    * @param force 
    */
@@ -100,15 +81,6 @@ export class Ball {
     this.context.fill();
     this.context.strokeStyle = 'white';
     this.context.stroke();
-
-    // Render wikimedia database name on circle
-    this.renderText(
-      this.context, 
-      this.x, 
-      this.y,
-      '30px Arial', 
-      this.ballName
-    )
   }
 
   /**
